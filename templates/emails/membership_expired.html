@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f5f5f5; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .header { background-color: #c82333; color: white; padding: 20px; text-align: center; border-radius: 5px 5px 0 0; }
+        .content { background-color: white; padding: 30px; border-radius: 0 0 5px 5px; }
+        .alert { background-color: #f8d7da; border-left: 4px solid #c82333; padding: 15px; margin: 20px 0; }
+        .button { display: inline-block; background-color: #27ae60; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; }
+        .footer { text-align: center; color: #999; font-size: 12px; margin-top: 30px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>⏸️ Membership Expired</h2>
+        </div>
+        <div class="content">
+            <p>Hi {{ member_name }},</p>
+            
+            <div class="alert">
+                <p style="margin: 0; font-size: 16px;">
+                    <strong>Your membership at {{ gym_name }} has expired.</strong>
+                </p>
+            </div>
+            
+            <p>We miss you! We'd love to have you back at our gym.</p>
+            
+            <h3>Why Come Back?</h3>
+            <ul>
+                <li>✓ Modern, fully-equipped facilities</li>
+                <li>✓ Expert trainers and classes</li>
+                <li>✓ Supportive fitness community</li>
+                <li>✓ Flexible membership options</li>
+            </ul>
+            
+            <a href="http://localhost:3000/renew-membership" class="button">Renew Your Membership</a>
+            
+            <p style="font-size: 12px; color: #999;">
+                Have questions? We're here to help! Contact: support@gym.com | +1234567890
+            </p>
+            
+            <div class="footer">
+                <p>See you soon! 💪</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

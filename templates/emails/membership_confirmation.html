@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f5f5f5; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .header { background-color: #27ae60; color: white; padding: 20px; text-align: center; border-radius: 5px 5px 0 0; }
+        .content { background-color: white; padding: 30px; border-radius: 0 0 5px 5px; }
+        .details-table { width: 100%; margin: 20px 0; border-collapse: collapse; }
+        .details-table td { padding: 12px; border: 1px solid #ddd; }
+        .details-table tr:nth-child(even) { background-color: #f9f9f9; }
+        .button { display: inline-block; background-color: #27ae60; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; }
+        .footer { text-align: center; color: #999; font-size: 12px; margin-top: 30px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>✓ Membership Confirmed!</h2>
+        </div>
+        <div class="content">
+            <p>Hi {{ member_name }},</p>
+            
+            <p style="font-size: 16px;">Welcome to <strong>{{ gym_name }}</strong>!</p>
+            
+            <h3>Your Membership Details:</h3>
+            <table class="details-table">
+                <tr>
+                    <td><strong>Start Date:</strong></td>
+                    <td>{{ start_date }}</td>
+                </tr>
+                <tr>
+                    <td><strong>End Date:</strong></td>
+                    <td>{{ end_date }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Membership ID:</strong></td>
+                    <td>{{ membership_id }}</td>
+                </tr>
+            </table>
+            
+            <p style="color: #666;">You can now access all our facilities. Visit us during business hours!</p>
+            
+            <a href="http://localhost:3000/dashboard" class="button">View Your Membership</a>
+            
+            <div class="footer">
+                <p>Questions? Contact us: support@gym.com | +1234567890</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

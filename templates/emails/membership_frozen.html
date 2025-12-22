@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f5f5f5; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .header { background-color: #0066cc; color: white; padding: 20px; text-align: center; border-radius: 5px 5px 0 0; }
+        .content { background-color: white; padding: 30px; border-radius: 0 0 5px 5px; }
+        .info { background-color: #cce5ff; border-left: 4px solid #0066cc; padding: 15px; margin: 20px 0; }
+        .footer { text-align: center; color: #999; font-size: 12px; margin-top: 30px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>❄️ Membership Frozen</h2>
+        </div>
+        <div class="content">
+            <p>Hi {{ member_name }},</p>
+            <div class="info">
+                <p style="margin: 0; font-size: 16px;">
+                    <strong>Your membership has been frozen as requested.</strong>
+                </p>
+            </div>
+            
+            <p><strong>Reason:</strong> {{ freeze_reason }}</p>
+            
+            <h3>What Does This Mean?</h3>
+            <ul>
+                <li>✓ Your membership is paused</li>
+                <li>✓ Your end date will be extended when you unfreeze</li>
+                <li>✓ You won't be charged during this period</li>
+                <li>✓ You can unfreeze anytime</li>
+            </ul>
+            
+            <p style="color: #666;">
+                Need to unfreeze your membership? Just let us know and we'll reactivate it immediately!
+            </p>
+            
+            <p style="font-size: 12px; color: #999;">
+                Contact us: support@gym.com | +1234567890
+            </p>
+            
+            <div class="footer">
+                <p>We look forward to seeing you again! 💪</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

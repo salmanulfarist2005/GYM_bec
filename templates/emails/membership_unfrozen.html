@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f5f5f5; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .header { background-color: #27ae60; color: white; padding: 20px; text-align: center; border-radius: 5px 5px 0 0; }
+        .content { background-color: white; padding: 30px; border-radius: 0 0 5px 5px; }
+        .success { background-color: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin: 20px 0; }
+        .button { display: inline-block; background-color: #27ae60; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; }
+        .footer { text-align: center; color: #999; font-size: 12px; margin-top: 30px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>✓ Membership Unfrozen!</h2>
+        </div>
+        <div class="content">
+            <p>Hi {{ member_name }},</p>
+            
+            <div class="success">
+                <p style="margin: 0; font-size: 16px;">
+                    <strong>Your membership has been unfrozen!</strong>
+                </p>
+            </div>
+            
+            <table style="width: 100%; margin: 20px 0; border-collapse: collapse;">
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;"><strong>Days Remaining:</strong></td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">{{ new_days_remaining }} days</td>
+                </tr>
+            </table>
+            
+            <p style="color: #666;">
+                Your membership end date has been extended by the freeze period. You can now use all our facilities again!
+            </p>
+            
+            <a href="http://localhost:3000/dashboard" class="button">View Your Membership</a>
+            
+            <p style="font-size: 12px; color: #999;">
+                Welcome back! We're happy to have you back at the gym. 💪
+            </p>
+            
+            <div class="footer">
+                <p>See you soon!</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
