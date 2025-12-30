@@ -2,6 +2,7 @@
 
 from rest_framework import serializers
 from .models import Gym, Plan, Payment, MembershipPeriod
+import ast
 
 
 class GymSerializer(serializers.ModelSerializer):
@@ -30,8 +31,22 @@ class PlanSerializer(serializers.ModelSerializer):
             # Handle case where perks is already a list (during update)
             if isinstance(obj.perks, list):
                 return obj.perks
-            # Handle case where perks is a string (from database)
-            return [perk.strip() for perk in obj.perks.split(',')]
+            
+            perks_str = str(obj.perks).strip()
+            
+            # Handle stringified list format e.g. "['gym', 'spa']" or '["gym"]'
+            if perks_str.startswith('[') and perks_str.endswith(']'):
+                try:
+                    # Safely evaluate the string literal
+                    parsed = ast.literal_eval(perks_str)
+                    if isinstance(parsed, list):
+                        return [str(p).strip() for p in parsed]
+                except (ValueError, SyntaxError):
+                    # Continue to comma split if parsing fails
+                    pass
+            
+            # Handle basic comma separation
+            return [perk.strip() for perk in perks_str.split(',') if perk.strip()]
         return []
     
     def create(self, validated_data):
@@ -77,36 +92,8 @@ class CreatePlanSerializer(serializers.ModelSerializer):
     
 
 
-class CreatePlanSerializer(serializers.ModelSerializer):
-    """
-    Serializer for creating plans - accepts perks as list or string
-    """
-    perks = serializers.ListField(child=serializers.CharField(), required=True)
-    
-    class Meta:
-        model = Plan
-        fields = ['name', 'duration_days', 'price', 'perks', 'is_active']
-    
-    def validate_duration_days(self, value):
-        if value <= 0:
-            raise serializers.ValidationError("Duration must be greater than 0")
-        return value
-    
-    def validate_price(self, value):
-        if value < 0:
-            raise serializers.ValidationError("Price cannot be negative")
-        return value
-    
-    def validate_name(self, value):
-        if not value.strip():
-            raise serializers.ValidationError("Plan name cannot be empty")
-        return value
-    
-    def create(self, validated_data):
-        perks_list = validated_data.pop('perks')
-        validated_data['perks'] = ', '.join(perks_list)
-        return super().create(validated_data)
-    
+
+
 
 
 
@@ -114,15 +101,13 @@ class PaymentSerializer(serializers.ModelSerializer):
     member_name = serializers.CharField(source='member.get_full_name', read_only=True)
     member_email = serializers.CharField(source='member.email', read_only=True)
     membership_details = serializers.SerializerMethodField()
-    plan_name = serializers.SerializerMethodField()
-    plan_price = serializers.SerializerMethodField()
     created_by_name = serializers.CharField(source='created_by.get_full_name', read_only=True)
     
     class Meta:
         model = Payment
         fields = [
             'id', 'member', 'member_name', 'member_email',
-            'applied_membership', 'membership_details', 'plan_name', 'plan_price',
+            'applied_membership', 'membership_details',
             'amount', 'payment_method', 'payment_status',
             'receipt_no', 'transaction_id', 'payment_date',
             'notes', 'created_by', 'created_by_name',
@@ -138,21 +123,6 @@ class PaymentSerializer(serializers.ModelSerializer):
                 'end_date': obj.applied_membership.end_date,
                 'status': obj.applied_membership.status
             }
-        return None
-    
-    def get_plan_name(self, obj):
-        # Try to get plan name from membership's source payment
-        if obj.applied_membership and obj.applied_membership.source_payment:
-            if hasattr(obj.applied_membership.source_payment, 'applied_plan'):
-                return obj.applied_membership.source_payment.applied_plan.name if obj.applied_membership.source_payment.applied_plan else None
-        return None
-    
-    def get_plan_price(self, obj):
-        # Try to get plan price from membership's source payment
-        if obj.applied_membership and obj.applied_membership.source_payment:
-            if hasattr(obj.applied_membership.source_payment, 'applied_plan'):
-                plan = obj.applied_membership.source_payment.applied_plan
-                return str(plan.price) if plan else None
         return None
 
 
@@ -174,8 +144,26 @@ class CreatePaymentSerializer(serializers.ModelSerializer):
         return value
     
     def validate_member(self, value):
+        # 1. Basic user type validation
         if value.user_type != 'member':
             raise serializers.ValidationError("Selected user is not a member")
+        
+        # 2. Context-based validation (ensure member matches admin's gym)
+        request = self.context.get('request')
+        if request and request.user and request.user.user_type == 'admin':
+            admin_gym = request.user.gym
+            try:
+                # Assuming simple relation or via profile
+                # If member.gym is direct on User model (from accounts.models):
+                member_gym = value.gym 
+                
+                # Double check against profile if needed, but User.gym is safer if synced
+                if member_gym != admin_gym:
+                    raise serializers.ValidationError("Member does not belong to your gym")
+            except AttributeError:
+                 # Fallback if structure varies
+                 pass
+        
         return value
     
     def validate_applied_membership(self, value):
@@ -189,13 +177,12 @@ class CreatePaymentSerializer(serializers.ModelSerializer):
         
         # Ensure membership belongs to the selected member
         if applied_membership and applied_membership.member != member:
-            raise serializers.ValidationError("Membership does not belong to the selected member")
+            raise serializers.ValidationError({"applied_membership": "Membership does not belong to the selected member"})
         
         return data
-    
-    def create(self, validated_data):
-        return super().create(validated_data)
 
+    
+    
 
 class UpdatePaymentSerializer(serializers.ModelSerializer):
     """

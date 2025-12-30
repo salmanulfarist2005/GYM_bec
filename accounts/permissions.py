@@ -5,7 +5,7 @@ class IsSuperUser(permissions.BasePermission):
     Allow access only to superuser users
     """
     def has_permission(self, request, view):
-        return request.user and request.user.is_authenticated and request.user.user_type == 'superuser'
+        return request.user and request.user.is_authenticated and (request.user.is_superuser or request.user.user_type == 'superuser')
 
 
 class IsGymAdmin(permissions.BasePermission):
@@ -30,7 +30,7 @@ class IsGymAdminOrMember(permissions.BasePermission):
     Allow access to gym admins or members
     """
     def has_permission(self, request, view):
-        return request.user and request.user.is_authenticated and request.user.user_type in ['admin', 'member']
+        return request.user and request.user.is_authenticated and (request.user.user_type in ['admin', 'member'] or request.user.is_superuser)
 
 
 class IsSuperUserOrAdmin(permissions.BasePermission):
@@ -38,7 +38,7 @@ class IsSuperUserOrAdmin(permissions.BasePermission):
     Allow access to superuser or admin users
     """
     def has_permission(self, request, view):
-        return request.user and request.user.is_authenticated and request.user.user_type in ['superuser', 'admin']
+        return request.user and request.user.is_authenticated and (request.user.is_superuser or request.user.user_type in ['superuser', 'admin'])
 
 
 class IsCustomer(permissions.BasePermission):

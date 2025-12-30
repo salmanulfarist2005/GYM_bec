@@ -189,11 +189,12 @@ class CreatePaymentView(APIView):
     
     def post(self, request):
         """Create payment for a member"""
-        serializer = CreatePaymentSerializer(data=request.data)
+        serializer = CreatePaymentSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             payment = serializer.save(created_by=request.user)
             return Response(PaymentSerializer(payment).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class PaymentListView(APIView):

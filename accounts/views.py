@@ -474,6 +474,8 @@ class AdminListView(generics.ListAPIView):
 class AdminDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserSerializer
     permission_classes = [IsSuperUser]
+    
+    
 class MemberListView(generics.ListAPIView):
     serializer_class = MemberProfileSerializer
     permission_classes = [IsGymAdmin]

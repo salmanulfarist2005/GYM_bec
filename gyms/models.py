@@ -303,5 +303,3 @@ class Payment(models.Model):
             self.receipt_no = f"REC-{uuid_str}-{date_str}"
         
         super().save(*args, **kwargs)
-
-
