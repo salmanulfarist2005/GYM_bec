@@ -66,6 +66,21 @@ class LoginView(APIView):
         }, status=status.HTTP_401_UNAUTHORIZED)
 
 
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+            refresh_token = request.data.get("refresh")
+            if not refresh_token:
+                 return Response({"error": "Refresh token is required"}, status=status.HTTP_400_BAD_REQUEST)
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            return Response(status=status.HTTP_205_RESET_CONTENT)
+        except Exception as e:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
 # Member Login
 class MemberLoginView(APIView):
     """
@@ -474,6 +489,7 @@ class AdminListView(generics.ListAPIView):
 class AdminDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserSerializer
     permission_classes = [IsSuperUser]
+    queryset = User.objects.filter(user_type='admin')
     
     
 class MemberListView(generics.ListAPIView):
