@@ -1,7 +1,7 @@
 """
 Django settings for gym_project - Local Development
 """
-
+import dj_database_url
 from pathlib import Path
 from datetime import timedelta
 import os
@@ -76,11 +76,20 @@ TEMPLATES = [
 WSGI_APPLICATION = 'gym_project.wsgi.application'
 
 # Database
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.parse(
+        config('DATABASE_URL'),
+        conn_max_age=600,
+        ssl_require=True
+    )
 }
 
 # Custom User Model
